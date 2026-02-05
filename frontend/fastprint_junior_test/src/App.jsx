@@ -1,13 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
 
   const [isAdd, setIsAdd] = useState(false);
+  const [produk, setProduk] = useState([]);
+
+  useEffect(() => {
+    
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    (async () => {
+      
+      try {
+        const response = await fetch("http://localhost:8080/produk", {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          signal
+        });
+
+        if (response.ok){
+          const result = await response.json();
+          setProduk(result.output.output);
+        }
+      } catch (error)
+      {
+
+      }
+
+    })();
+
+    return () => { controller.abort(); }
+
+  }, []);
 
   return (
-    <div className='bg-gray-900 grid grid-cols-12 grid-rows-12 h-screen'>
-      <div className="col-span-6 col-start-4 py-4 grid grid-cols-12 gap-10">
-        <button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>
+    <div className='bg-gray-900 grid grid-cols-12 h-dvh'>
+      <div className="col-span-6 col-start-4 py-4 grid grid-cols-12 grid-rows-12 gap-10 h-dvh">
+        <button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 row-start-1 row-end-2 hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>
         { isAdd && (
           <form method="POST" className='col-span-12'>
             <div className="my-6">
@@ -43,10 +75,10 @@ function App() {
         ) }
         { !isAdd && (
 
-          <div className="col-span-12">
-            <h2 className='my-12 text-gray-50 text-center font-semibold text-3xl'>Daftar Produk</h2>
-            <div className='my-12 w-full text-slate-300 bg-slate-800 rounded-xl overflow-clip border border-slate-800' >
-              <table className='w-full text-left table-auto min-w-max'>
+          <div className="col-span-12 row-span-12 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <h2 className='mb-12 text-gray-50 text-center font-semibold text-3xl'>Daftar Produk</h2>
+            <div className='w-full text-slate-300 bg-slate-800 rounded-xl border border-slate-800 overflow-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:bg-slate-800 [&::-webkit-scrollbar]:rounded-b [&::-webkit-scrollbar-thumb]:bg-slate-500 [&::-webkit-scrollbar-thumb]:rounded-b' >
+              <table className='w-full text-left min-w-max'>
                 <thead>
                   <tr>
                     <th className='p-4 border-b border-slate-600 bg-slate-950'>
@@ -64,76 +96,24 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className='even:bg-slate-900 hover:bg-slate-700'>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>ALCOHOL GEL POLISH CLEANSER GP-CLN01</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>12500</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      L QUEENLY
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      Bisa Dijual
-                    </td>
-                  </tr>
-                  <tr className='even:bg-slate-900 hover:bg-slate-700'>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>ALCOHOL GEL POLISH CLEANSER GP-CLN01</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>12500</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      L QUEENLY
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      Bisa Dijual
-                    </td>
-                  </tr>
-                  <tr className='even:bg-slate-900 hover:bg-slate-700'>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>ALCOHOL GEL POLISH CLEANSER GP-CLN01</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>12500</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      L QUEENLY
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      Bisa Dijual
-                    </td>
-                  </tr>
-                  <tr className='even:bg-slate-900 hover:bg-slate-700'>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>ALCOHOL GEL POLISH CLEANSER GP-CLN01</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      <p>12500</p>
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      L QUEENLY
-                    </td>
-                    <td className='p-4 border-b border-slate-700'>
-                      Bisa Dijual
-                    </td>
-                  </tr>
-                  <tr className='even:bg-slate-900 hover:bg-slate-700'>
-                    <td className='p-4 border-slate-700'>
-                      <p>ALCOHOL GEL POLISH CLEANSER GP-CLN01</p>
-                    </td>
-                    <td className='p-4 border-slate-700'>
-                      <p>12500</p>
-                    </td>
-                    <td className='p-4 border-slate-700'>
-                      L QUEENLY
-                    </td>
-                    <td className='p-4 border-slate-700'>
-                      Bisa Dijual
-                    </td>
-                  </tr>
+                  { 
+                    produk.map((produk, index) => (
+                      <tr key={index} className='even:bg-slate-900 hover:bg-slate-700'>
+                        <td className='p-4 border border-slate-700'>
+                          <p> { produk.nama_produk } </p>
+                        </td>
+                        <td className='p-4 border border-slate-700'>
+                          <p> { produk.harga } </p>
+                        </td>
+                        <td className='p-4 border border-slate-700'>
+                          <p> { produk.nama_kategori } </p>
+                        </td>
+                        <td className='p-4 border border-slate-700'>
+                          <p> { produk.nama_status } </p>
+                        </td>
+                      </tr>
+                    )) 
+                  }
                 </tbody>
               </table>
             </div>
