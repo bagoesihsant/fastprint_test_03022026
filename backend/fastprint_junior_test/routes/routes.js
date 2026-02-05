@@ -1,4 +1,8 @@
+// Import Modules
 import express from 'express';
+
+// Import Controllers
+import * as controllers from '../controllers/controller.js';
 
 export const router = express.Router();
 
@@ -6,6 +10,4 @@ export const router = express.Router();
 router.use(express.json());
 
 // Routes Declaration
-router.get('/', (req, res) => {
-    res.status(200).json({message: "Accessed from router."});
-});
+router.get('/', controllers.showAvailableProduk);

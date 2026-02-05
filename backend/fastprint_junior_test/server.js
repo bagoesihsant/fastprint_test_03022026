@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 });
 
 // Router Endpoint Declaration
-app.use('/router', router);
+app.use('/produk', router);
 
 app.listen(PORT, () => {
     console.log(`App is now listening on port ${PORT}`);
