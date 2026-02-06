@@ -13,3 +13,5 @@ router.use(express.json());
 router.get('/', controllers.showAvailableProduk);
 router.get('/kategori', controllers.getAllKategori);
 router.get('/status', controllers.getAllStatus);
+
+router.post('/', controllers.addProduk);

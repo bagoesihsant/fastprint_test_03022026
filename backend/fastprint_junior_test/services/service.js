@@ -75,3 +75,29 @@ export async function getAllStatus(){
     }
 
 }
+
+/**
+ * Add record to produk table in database
+ * @param { Produk } produk custom object containing nama, harga, kategori, dan status produk
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function addProduk(produk){
+
+    try {
+
+        // Query Execution
+        const addResult = await models.addProduk(produk);
+
+        // Check query result
+        if (addResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if success
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}

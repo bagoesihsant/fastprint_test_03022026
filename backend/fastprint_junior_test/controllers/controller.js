@@ -75,3 +75,56 @@ export async function getAllStatus(req, res, next){
     }
 
 }
+
+/**
+ * Add record to produk table in database
+ * @param { express.Request } req Express.js Request method used for capturing User Request more documentation on http://expressjs.com/
+ * @param { express.Response } res Express.js Response method used for giving response to User request from API more documentation on http://expressjs.com/
+ * @param { express.Next } next Express.js Next method used to forward current request to forward request handler more documentation on http://expressjs.com/
+ * @returns Express JS Response for API Access
+ */
+export async function addProduk(req, res, next){
+
+    try {
+
+        // Get users inputs
+        const requestBody = req.body;
+
+        // Check Nama Produk
+        if (requestBody.nama_produk.trim().length < 1) {
+            return res.status(400).json({ message: 'Nama Produk harus diisi.' });
+        }
+
+        // Check Harga Produk
+        if (!/^\d+$/.test(requestBody.harga_produk)) {
+            return res.status(400).json({ message: 'Harga Produk hanya boleh terdiri dari angka.' });
+        }
+
+        // Check Kategori Produk
+        if (!/^\d+$/.test(requestBody.kategori_produk)) {
+            return res.status(400).json({ message: 'Kategori Produk invalid.' });
+        }
+
+        // Check Status Produk
+        if (!/^\d+$/.test(requestBody.status_produk)) {
+            return res.status(400).json({ message: 'Status Produk invalid.' });
+        }
+
+        const inputProduk = await services.addProduk({
+            nama: requestBody.nama_produk,
+            harga: requestBody.harga_produk,
+            kategori: requestBody.kategori_produk,
+            status: requestBody.status_produk,
+        });
+
+        if (!inputProduk.ok) {
+            return res.status(400).json({ message: 'Gagal menambahkan Produk.' });
+        }
+
+        return res.status(200).json({ message: 'Berhasil menambahkan Produk.' })
+
+    } catch (error) {
+        console.error('Controller Error', error);
+    }
+
+}

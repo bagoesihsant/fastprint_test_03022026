@@ -27,6 +27,9 @@ export async function query(rawQuery){
             // Log
             console.log('Executed Query', { duration: `${finishTime}ms`, rowCount: result.rowCount });
 
+            // Release Client after finishing query
+            client.release();
+
             // Return result
             return result;
 
@@ -66,6 +69,9 @@ export async function parameterizedQuery(rawQuery, params){
 
             // Log
             console.log('Executed Query', { duration: `${finishTime}ms`, rowCount: result.rowCount });
+
+            // Release Client after finishing query
+            client.release();
 
             // Return result
             return result;
