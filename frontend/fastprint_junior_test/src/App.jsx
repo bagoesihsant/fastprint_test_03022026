@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 
 function App() {
 
@@ -6,6 +7,7 @@ function App() {
   const [produk, setProduk] = useState([]);
   const [kategori, setKategori] = useState([]);
   const [status, setStatus] = useState([]);
+  const { register, handleSubmit, reset, formState: { errors, } } = useForm({mode: 'onChange'});
 
   useEffect(() => {
     const produkController = new AbortController();
@@ -87,25 +89,71 @@ function App() {
 
   }, []);
 
+  async function fetchData(){
+    const response = await fetch("http://localhost:8080/produk", {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    if (response.ok){
+      const result = await response.json();
+      setProduk(result.output.output);
+    }
+  }
+
+  async function addForm(data){
+
+    try {
+
+      const response = await fetch('http://localhost:8080/produk/', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.message);
+      } else {
+        const result = await response.json();
+        alert(result.message);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+
+    reset();
+    fetchData();
+    setIsAdd(!isAdd);
+
+  }
+
   return (
     <div className='bg-gray-900 grid grid-cols-12 h-dvh'>
       <div className="col-span-6 col-start-4 py-4 grid grid-cols-12 grid-rows-12 gap-10 h-dvh">
-        <button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 row-start-1 row-end-2 hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>
+        <button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 row-start-1 row-end-2 flex self-center justify-center hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>
         { isAdd && (
-          <form method="POST" className='col-span-12'>
+          <form method="POST" className='col-span-12' onSubmit={handleSubmit(addForm)}>
             <div className="my-6">
                 <h2 className="text-gray-50 text-center font-semibold text-3xl">Tambah Produk</h2>
                 <div className="my-4 grid grid-cols-12 gap-2">
                   <label htmlFor="nama_produk" className='text-gray-50 col-span-4 font-semibold'>Nama Produk</label>
-                  <input type="text" name="nama_produk" id="nama_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12' />
+                  <input type="text" name="nama_produk" id="nama_produk" className={`border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 ${ errors['nama_produk'] ? "hover:border-red-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-400" : "hover:border-cyan-300 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-300" }`} { ...register("nama_produk", { required: { value: true, message: 'Nama Produk tidak boleh kosong.' } }) }/>
+                  { errors['nama_produk'] && (<p className="text-red-400 text-sm col-span-12">{ errors['nama_produk'].message }</p>) }
                 </div>
                 <div className="my-4 grid grid-cols-12 gap-2">
                   <label htmlFor="harga_produk" className='text-gray-50 col-span-4 font-semibold'>Harga Produk</label>
-                  <input type="text" name="harga_produk" id="harga_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12' />
+                  <input type="text" name="harga_produk" id="harga_produk" className={`border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 ${ errors['harga_produk'] ? "hover:border-red-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-400" : "hover:border-cyan-300 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-300" }`} { ...register("harga_produk", { required: { value: true, message: 'Harga Produk tidak boleh kosong.' }, pattern: { value: /^\d+$/, message: 'Harga hanya boleh terdiri dari angka' } }) }/>
+                  { errors['harga_produk'] && (<p className="text-red-400 text-sm col-span-12">{ errors['harga_produk'].message }</p>) }
                 </div>
                 <div className="my-4 grid grid-cols-12 gap-2">
                   <label htmlFor="kategori_produk" className='text-gray-50 col-span-4 font-semibold'>Kategori</label>
-                  <select name="kategori_produk" id="kategori_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12'>
+                  <select name="kategori_produk" id="kategori_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12' { ...register("kategori_produk") }>
                     {
                       kategori.map((kategori) => (
                         <option key={ kategori.id_kategori } value={ kategori.id_kategori } className='bg-gray-900'>{ kategori.nama_kategori }</option>
@@ -115,7 +163,7 @@ function App() {
                 </div>
                 <div className="my-4 grid grid-cols-12 gap-2">
                   <label htmlFor="status_produk" className='text-gray-50 col-span-4 font-semibold'>Status</label>
-                  <select name="status_produk" id="status_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 capitalize'>
+                  <select name="status_produk" id="status_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 capitalize' { ...register("status_produk") }>
                     {
                       status.map((status) => (
                         <option key={ status.id_status } value={ status.id_status } className='bg-gray-900 capitalize'>{ status.nama_status }</option>
