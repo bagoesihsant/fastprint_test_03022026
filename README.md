@@ -52,4 +52,16 @@ Untuk menjalankan aplikasi ini, dibutuhkan 2 bash/command prompt yang masing-mas
 <br>
 
 # Preview Aplikasi
-![Preview 1]("")
+![Preview 1](https://github.com/bagoesihsant/fastprint_test_03022026/blob/main/preview/preview_1.png)
+
+<br>
+
+![Preview 2](https://github.com/bagoesihsant/fastprint_test_03022026/blob/main/preview/preview_2.png)
+
+<br>
+
+![Preview 3](https://github.com/bagoesihsant/fastprint_test_03022026/blob/main/preview/preview_3.png)
+
+<br>
+
+![Preview 4](https://github.com/bagoesihsant/fastprint_test_03022026/blob/main/preview/preview_4.png)
