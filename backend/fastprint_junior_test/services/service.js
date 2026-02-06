@@ -101,3 +101,55 @@ export async function addProduk(produk){
     }
 
 }
+
+/**
+ * Check record of produk with specific id in table produk
+ * @param { Produk } produk custom object containing id
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function checkProduk(produk){
+
+    try {
+
+        // Query Execution
+        const checkResult = await models.checkProduk(produk);
+
+        // Check query result
+        if (checkResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if produk is found
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Delete record from produk table in database
+ * @param { Produk } produk custom object containing nama, harga, kategori, dan status produk
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function deleteProduk(produk){
+
+    try {
+
+        // Query Execution
+        const delResult = await models.deleteProduk(produk);
+
+        // Check query result
+        if (delResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if success
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}

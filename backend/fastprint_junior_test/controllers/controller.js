@@ -128,3 +128,48 @@ export async function addProduk(req, res, next){
     }
 
 }
+
+/**
+ * Delete record of produk in table produk
+ * @param { express.Request } req Express.js Request method used for capturing User Request more documentation on http://expressjs.com/
+ * @param { express.Response } res Express.js Response method used for giving response to User request from API more documentation on http://expressjs.com/
+ * @param { express.Next } next Express.js Next method used to forward current request to forward request handler more documentation on http://expressjs.com/
+ * @returns Express JS Response for API Access
+ */
+export async function delProduk(req, res, next){
+
+    try {
+
+        // Get users input from url
+        const requestParams = req.params;
+
+        // Check produk id
+        if (requestParams.id.trim().length < 1) {
+            return res.status(400).json({ message: 'Id Produk tidak boleh kosong.' });
+        }
+
+        // Check produk id 2
+        if (!/^\d+$/.test(requestParams.id)) {
+            return res.status(400).json({ message: 'Id Produk invalid.' });
+        }
+
+        // Check produk id 3
+        const checkProduk = await services.checkProduk({ id: requestParams.id });
+
+        if (!checkProduk.ok) {
+            return res.status(400).json({ message: 'Produk dengan Id ini tidak ditemukan.' });
+        }
+
+        const delProdukResult = await services.deleteProduk({ id: requestParams.id });
+
+        if (!delProdukResult.ok) {
+            return res.status(400).json({ message: 'Gagal menghapus Produk.' });
+        }
+
+        return res.status(200).json({ message: 'Berhasil menghapus produk.' });
+
+    } catch (error) {
+        console.error('Controller Error', error);
+    }
+
+}

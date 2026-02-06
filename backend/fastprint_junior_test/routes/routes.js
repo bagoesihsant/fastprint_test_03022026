@@ -15,3 +15,5 @@ router.get('/kategori', controllers.getAllKategori);
 router.get('/status', controllers.getAllStatus);
 
 router.post('/', controllers.addProduk);
+
+router.delete('/:id', controllers.delProduk);
