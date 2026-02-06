@@ -8,7 +8,7 @@ import { query, parameterizedQuery } from '../helpers/query.js';
 export async function getAllProduk(){
 
     try {
-        const result = await query("SELECT produk.nama_produk, kategori.nama_kategori, produk.harga, status.nama_status FROM produk JOIN kategori ON produk.kategori_id = kategori.id_kategori JOIN status ON produk.status_id = status.id_status");
+        const result = await query("SELECT produk.id_produk, produk.nama_produk, kategori.nama_kategori, produk.harga, status.nama_status FROM produk JOIN kategori ON produk.kategori_id = kategori.id_kategori JOIN status ON produk.status_id = status.id_status");
         return result;
     } catch (error) {
         console.error('Model Error', error);

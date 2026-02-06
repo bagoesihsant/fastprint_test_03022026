@@ -1,7 +1,13 @@
 // Import Modules
 import * as services from '../services/service.js';
 
-
+/**
+ * Show all available produk that have status of 'bisa dijual'
+ * @param { express.Request } req Express.js Request method used for capturing User Request more documentation on http://expressjs.com/
+ * @param { express.Response } res Express.js Response method used for giving response to User request from API more documentation on http://expressjs.com/
+ * @param { express.Next } next Express.js Next method used to forward current request to forward request handler more documentation on http://expressjs.com/
+ * @returns Express JS Response for API Access
+ */
 export async function showAvailableProduk(req, res, next){
 
     try {
@@ -13,6 +19,56 @@ export async function showAvailableProduk(req, res, next){
         }
 
         res.status(200).json({ message: 'Product Found', output: produk });
+
+    } catch (error) {
+        console.error('Controller Error', error);
+    }
+
+}
+
+/**
+ * Get all kategori from database
+ * @param { express.Request } req Express.js Request method used for capturing User Request more documentation on http://expressjs.com/
+ * @param { express.Response } res Express.js Response method used for giving response to User request from API more documentation on http://expressjs.com/
+ * @param { express.Next } next Express.js Next method used to forward current request to forward request handler more documentation on http://expressjs.com/
+ * @returns Express JS Response for API Access
+ */
+export async function getAllKategori(req, res, next){
+
+    try {
+
+        const kategori = await services.getAllKategori();
+
+        if (!kategori.ok) {
+            return res.status(400).json({ message: 'No kategori found' });
+        }
+
+        res.status(200).json({ message: 'Kategori found', output: kategori });
+
+    } catch (error) {
+        console.error('Controller Error', error);
+    }
+
+}
+
+/**
+ * Get all status from database
+ * @param { express.Request } req Express.js Request method used for capturing User Request more documentation on http://expressjs.com/
+ * @param { express.Response } res Express.js Response method used for giving response to User request from API more documentation on http://expressjs.com/
+ * @param { express.Next } next Express.js Next method used to forward current request to forward request handler more documentation on http://expressjs.com/
+ * @returns Express JS Response for API Access
+ */
+export async function getAllStatus(req, res, next){
+
+    try {
+
+        const status = await services.getAllStatus();
+
+        if (!status.ok) {
+            return res.status(400).json({ message: 'No status found' });
+        }
+
+        res.status(200).json({ message: 'Status found', output: status });
 
     } catch (error) {
         console.error('Controller Error', error);

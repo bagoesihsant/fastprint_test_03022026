@@ -11,3 +11,5 @@ router.use(express.json());
 
 // Routes Declaration
 router.get('/', controllers.showAvailableProduk);
+router.get('/kategori', controllers.getAllKategori);
+router.get('/status', controllers.getAllStatus);

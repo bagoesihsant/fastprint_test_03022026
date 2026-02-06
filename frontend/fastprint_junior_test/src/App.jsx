@@ -4,11 +4,18 @@ function App() {
 
   const [isAdd, setIsAdd] = useState(false);
   const [produk, setProduk] = useState([]);
+  const [kategori, setKategori] = useState([]);
+  const [status, setStatus] = useState([]);
 
   useEffect(() => {
-    
-    const controller = new AbortController();
-    const signal = controller.signal;
+    const produkController = new AbortController();
+    const produkSignal = produkController.signal;
+
+    const kategoriController = new AbortController();
+    const kategoriSignal = kategoriController.signal;
+
+    const statusController = new AbortController();
+    const statusSignal = statusController.signal;
 
     (async () => {
       
@@ -18,7 +25,7 @@ function App() {
           headers: {
             "Content-Type": "application/json",
           },
-          signal
+          produkSignal
         });
 
         if (response.ok){
@@ -32,7 +39,51 @@ function App() {
 
     })();
 
-    return () => { controller.abort(); }
+    (async () => {
+
+      try {
+        const response = await fetch("http://localhost:8080/produk/kategori", {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          kategoriSignal
+        });
+
+        if (response.ok){
+          const result = await response.json();
+          setKategori(result.output.output);
+        }
+      } catch (error)
+      {
+
+      }
+
+    })();
+
+    (async () => {
+
+      try {
+        const response = await fetch("http://localhost:8080/produk/status", {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          statusSignal
+        });
+
+        if (response.ok){
+          const result = await response.json();
+          setStatus(result.output.output);
+        }
+      } catch (error)
+      {
+
+      } 
+
+    })();
+
+    return () => { produkController.abort(); kategoriController.abort(); statusController.abort();  }
 
   }, []);
 
@@ -55,16 +106,21 @@ function App() {
                 <div className="my-4 grid grid-cols-12 gap-2">
                   <label htmlFor="kategori_produk" className='text-gray-50 col-span-4 font-semibold'>Kategori</label>
                   <select name="kategori_produk" id="kategori_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12'>
-                    <option value="1" className='bg-gray-900'>L QUEENLY</option>
-                    <option value="2" className='bg-gray-900'>L MTH AKSESORIS (IM)</option>
-                    <option value="3" className='bg-gray-900'>L MTH TABUNG (LK)</option>
+                    {
+                      kategori.map((kategori) => (
+                        <option key={ kategori.id_kategori } value={ kategori.id_kategori } className='bg-gray-900'>{ kategori.nama_kategori }</option>
+                      ))
+                    }
                   </select>
                 </div>
                 <div className="my-4 grid grid-cols-12 gap-2">
                   <label htmlFor="status_produk" className='text-gray-50 col-span-4 font-semibold'>Status</label>
-                  <select name="status_produk" id="status_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12'>
-                    <option value="1" className='bg-gray-900'>Bisa Dijual</option>
-                    <option value="2" className='bg-gray-900'>Tidak Bisa Dijual</option>
+                  <select name="status_produk" id="status_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 capitalize'>
+                    {
+                      status.map((status) => (
+                        <option key={ status.id_status } value={ status.id_status } className='bg-gray-900 capitalize'>{ status.nama_status }</option>
+                      ))
+                    }
                   </select>
                 </div>
                 <div className="my-6 grid grid-cols-12 gap-2">
@@ -97,8 +153,8 @@ function App() {
                 </thead>
                 <tbody>
                   { 
-                    produk.map((produk, index) => (
-                      <tr key={index} className='even:bg-slate-900 hover:bg-slate-700'>
+                    produk.map((produk) => (
+                      <tr key={produk.id_produk} className='even:bg-slate-900 hover:bg-slate-700'>
                         <td className='p-4 border border-slate-700'>
                           <p> { produk.nama_produk } </p>
                         </td>
