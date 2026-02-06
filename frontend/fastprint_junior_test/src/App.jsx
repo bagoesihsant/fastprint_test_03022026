@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { FaTrashAlt, FaEdit, } from "react-icons/fa";
 
 function App() {
 
@@ -133,9 +134,38 @@ function App() {
 
   }
 
+  async function delProduk(id){
+
+    console.log(`http://localhost:8080/produk/${id}`);
+
+    try {
+
+      const response = await fetch(`http://localhost:8080/produk/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.message);
+      } else {
+        const result = await response.json();
+        alert(result.message);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+
+    fetchData();
+
+  }
+
   return (
     <div className='bg-gray-900 grid grid-cols-12 h-dvh'>
-      <div className="col-span-6 col-start-4 py-4 grid grid-cols-12 grid-rows-12 gap-10 h-dvh">
+      <div className="col-span-10 col-start-2 py-4 grid grid-cols-12 grid-rows-12 gap-10 h-dvh">
         <button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 row-start-1 row-end-2 flex self-center justify-center hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>
         { isAdd && (
           <form method="POST" className='col-span-12' onSubmit={handleSubmit(addForm)}>
@@ -197,6 +227,9 @@ function App() {
                     <th className='p-4 border-b border-slate-600 bg-slate-950'>
                       <p>Status</p>
                     </th>
+                    <th className='p-4 border-b border-slate-600 bg-slate-950' colSpan={2}>
+                      <p>Action</p>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -214,6 +247,12 @@ function App() {
                         </td>
                         <td className='p-4 border border-slate-700'>
                           <p> { produk.nama_status } </p>
+                        </td>
+                        <td className="p-4 border border-slate-700">
+                          <FaEdit className='text-xl text-cyan-500 cursor-pointer hover:text-cyan-300' />
+                        </td>
+                        <td className="p-4 border border-slate-700">
+                          <FaTrashAlt className='text-xl text-red-500 cursor-pointer hover:text-red-300' onClick={ () => { confirm('Apakah yakin untuk delete?') ? delProduk(produk.id_produk) : "" } }/>
                         </td>
                       </tr>
                     )) 
