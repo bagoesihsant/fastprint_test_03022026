@@ -1,0 +1,207 @@
+// Import Modules
+import * as models from '../models/models.js';
+
+/**
+ * Get all available produk from database
+ * @returns { Custom Object } Custom Object with value of ok (Boolean), and output (Array) with empty output or complete data
+ */
+export async function showAvailableProduk(){
+
+    try {
+
+        // Query execution
+        const avaiableProduk = await models.getAllAvailableProduk();
+
+        // Check query result
+        if (avaiableProduk.rowCount < 1) {
+            return { ok: false, output: [] }
+        }
+
+        // Return query result if success
+        return { ok: true, output: avaiableProduk.rows }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Check record of produk with specific id in table produk
+ * @param { Produk } produk custom object containing id
+ * @returns { Custom Object } Custom Object with value of ok (Boolean), and output (Array) with empty output or complete data
+ */
+export async function getSpecificProduk(produk){
+
+    try {
+
+        // Query Execution
+        const specificProduk = await models.getSpecificProduk(produk);
+
+        // Check query result
+        if (specificProduk.rowCount < 1) {
+            return { ok: false, output: [] }
+        }
+
+        // Return query result if success
+        return { ok: true, output: specificProduk.rows }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Get all kategori from database
+ * @returns { Custom Object } Custom Object with value of ok (Boolean), and output (Array) with empty output or complete data
+ */
+export async function getAllKategori(){
+
+    try {
+
+        // Query Execution
+        const allKategori = await models.getAllKategori();
+
+        // Check query result
+        if (allKategori.rowCount < 1) {
+            return { ok: false, output: [] }
+        }
+
+        // Return query result if success
+        return { ok: true, output: allKategori.rows }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Get all status from database
+ * @returns { Custom Object } Custom Object with value of ok (Boolean), and output (Array) with empty output or complete data
+ */
+export async function getAllStatus(){
+
+    try {
+
+        // Query Execution
+        const allStatus = await models.getAllStatus();
+
+        // Check query result
+        if (allStatus.rowCount < 1) {
+            return { ok: false, output: [] }
+        }
+
+        // Return query result if success
+        return { ok: true, output: allStatus.rows }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Add record to produk table in database
+ * @param { Produk } produk custom object containing nama, harga, kategori, dan status produk
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function addProduk(produk){
+
+    try {
+
+        // Query Execution
+        const addResult = await models.addProduk(produk);
+
+        // Check query result
+        if (addResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if success
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Check record of produk with specific id in table produk
+ * @param { Produk } produk custom object containing id
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function checkProduk(produk){
+
+    try {
+
+        // Query Execution
+        const checkResult = await models.checkProduk(produk);
+
+        // Check query result
+        if (checkResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if produk is found
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Delete record from produk table in database
+ * @param { Produk } produk custom object containing nama, harga, kategori, dan status produk
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function deleteProduk(produk){
+
+    try {
+
+        // Query Execution
+        const delResult = await models.deleteProduk(produk);
+
+        // Check query result
+        if (delResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if success
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Update record from produk table in database
+ * @param { Produk } produk custom object containing id, nama, harga, kategori, dan status produk
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function updateProduk(produk) {
+
+    try {
+
+        // Query Execution
+        const updateResult = await models.updateProduk(produk);
+
+        // Check Query Result
+        if (updateResult.rowCount < 1){
+            return { ok: false }
+        }
+
+        // Return ok true if success
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
