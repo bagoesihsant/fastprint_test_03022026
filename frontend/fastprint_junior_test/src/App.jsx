@@ -5,9 +5,13 @@ import { FaTrashAlt, FaEdit, } from "react-icons/fa";
 function App() {
 
   const [isAdd, setIsAdd] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
+
   const [produk, setProduk] = useState([]);
   const [kategori, setKategori] = useState([]);
   const [status, setStatus] = useState([]);
+
+  const [updateProduk, setUpdateProduk] = useState({});
   const { register, handleSubmit, reset, formState: { errors, } } = useForm({mode: 'onChange'});
 
   useEffect(() => {
@@ -136,8 +140,6 @@ function App() {
 
   async function delProduk(id){
 
-    console.log(`http://localhost:8080/produk/${id}`);
-
     try {
 
       const response = await fetch(`http://localhost:8080/produk/${id}`, {
@@ -163,12 +165,68 @@ function App() {
 
   }
 
+  async function fetchSpecificProduk(id) {
+
+    try {
+
+      const response = await fetch(`http://localhost:8080/produk/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUpdateProduk(result.output.output[0]);
+        setIsUpdate(!isUpdate);
+      } else {
+        const result = await response.json();
+        console.log(result);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+  async function updateForm(data){
+
+    try {
+
+      const response = await fetch(`http://localhost:8080/produk/${updateProduk.id_produk}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type' : 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(result.message);
+      } else {
+        const result = await response.json();
+        alert(result.message);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+
+    reset();
+    fetchData();
+    setIsUpdate(!isUpdate);
+  }
+
   return (
     <div className='bg-gray-900 grid grid-cols-12 h-dvh'>
       <div className="col-span-10 col-start-2 py-4 grid grid-cols-12 grid-rows-12 gap-10 h-dvh">
-        <button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 row-start-1 row-end-2 flex self-center justify-center hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>
-        { isAdd && (
-          <form method="POST" className='col-span-12' onSubmit={handleSubmit(addForm)}>
+        { !isUpdate && (<button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-10 col-span-3 row-start-1 row-end-2 flex self-center justify-center hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsAdd(!isAdd); }}>{ !isAdd ? "Tambah Produk" : "Batal Tambah Produk" }</button>) }
+        { isUpdate && (<button type="button" className="border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold py-2 px-2 cursor-pointer col-start-1 col-span-3 row-start-1 row-end-2 flex self-center justify-center hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50" onClick={() => { setIsUpdate(!isUpdate); }}>{ !isUpdate ? "Ubah Produk" : "Batal Ubah Produk" }</button>) }
+        { isAdd ? (
+          <form method="POST" className='col-span-12' onSubmit={handleSubmit(addForm)} id="add_form">
             <div className="my-6">
                 <h2 className="text-gray-50 text-center font-semibold text-3xl">Tambah Produk</h2>
                 <div className="my-4 grid grid-cols-12 gap-2">
@@ -206,8 +264,47 @@ function App() {
                 </div>
             </div>
           </form>
+        ) : isUpdate && (
+          <form method="POST" className='col-span-12' onSubmit={handleSubmit(updateForm)} id="update_form">
+            <div className="my-6">
+                <h2 className="text-gray-50 text-center font-semibold text-3xl">Edit Produk</h2>
+                <div className="my-4 grid grid-cols-12 gap-2">
+                  <label htmlFor="update_nama_produk" className='text-gray-50 col-span-4 font-semibold'>Nama Produk</label>
+                  <input type="text" name="update_nama_produk" id="update_nama_produk" className={`border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 ${ errors['update_nama_produk'] ? "hover:border-red-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-400" : "hover:border-cyan-300 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-300" }`} { ...register("update_nama_produk", { required: { value: true, message: 'Nama Produk tidak boleh kosong.' } }) } defaultValue={ updateProduk.nama_produk }/>
+                  { errors['update_nama_produk'] && (<p className="text-red-400 text-sm col-span-12">{ errors['update_nama_produk'].message }</p>) }
+                </div>
+                <div className="my-4 grid grid-cols-12 gap-2">
+                  <label htmlFor="update_harga_produk" className='text-gray-50 col-span-4 font-semibold'>Harga Produk</label>
+                  <input type="text" name="update_harga_produk" id="update_harga_produk" className={`border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 ${ errors['update_harga_produk'] ? "hover:border-red-400 focus:outline-2 focus:-outline-offset-2 focus:outline-red-400" : "hover:border-cyan-300 focus:outline-2 focus:-outline-offset-2 focus:outline-cyan-300" }`} { ...register("update_harga_produk", { required: { value: true, message: 'Harga Produk tidak boleh kosong.' }, pattern: { value: /^\d+$/, message: 'Harga hanya boleh terdiri dari angka' } }) } defaultValue={ updateProduk.harga } />
+                  { errors['update_harga_produk'] && (<p className="text-red-400 text-sm col-span-12">{ errors['update_harga_produk'].message }</p>) }
+                </div>
+                <div className="my-4 grid grid-cols-12 gap-2">
+                  <label htmlFor="update_kategori_produk" className='text-gray-50 col-span-4 font-semibold'>Kategori</label>
+                  <select name="update_kategori_produk" id="update_kategori_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12' { ...register("update_kategori_produk") } defaultValue={updateProduk.kategori_id} >
+                    {
+                      kategori.map((kategori) => (
+                        <option key={ kategori.id_kategori } value={ kategori.id_kategori } className='bg-gray-900' >{ kategori.nama_kategori }</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className="my-4 grid grid-cols-12 gap-2">
+                  <label htmlFor="update_status_produk" className='text-gray-50 col-span-4 font-semibold'>Status</label>
+                  <select name="update_status_produk" id="update_status_produk" className='border-2 border-gray-400 py-1 indent-2 rounded text-gray-50 col-span-12 capitalize' { ...register("update_status_produk") } defaultValue={updateProduk.status_id} >
+                    {
+                      status.map((status) => (
+                        <option key={ status.id_status } value={ status.id_status } className='bg-gray-900 capitalize' >{ status.nama_status }</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className="my-6 grid grid-cols-12 gap-2">
+                  <button type="submit" className='border-2 bg-slate-300 rounded text-center text-gray-900 font-semibold col-span-8 col-start-3 py-2 cursor-pointer hover:bg-slate-900 hover:border-slate-300 hover:text-gray-50'>Ubah Produk</button>
+                </div>
+            </div>
+          </form>
         ) }
-        { !isAdd && (
+        { !isAdd ? isUpdate ? "" : (
 
           <div className="col-span-12 row-span-12 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             <h2 className='mb-12 text-gray-50 text-center font-semibold text-3xl'>Daftar Produk</h2>
@@ -249,7 +346,7 @@ function App() {
                           <p> { produk.nama_status } </p>
                         </td>
                         <td className="p-4 border border-slate-700">
-                          <FaEdit className='text-xl text-cyan-500 cursor-pointer hover:text-cyan-300' />
+                          <FaEdit className='text-xl text-cyan-500 cursor-pointer hover:text-cyan-300' onClick={ () => { fetchSpecificProduk(produk.id_produk); } } />
                         </td>
                         <td className="p-4 border border-slate-700">
                           <FaTrashAlt className='text-xl text-red-500 cursor-pointer hover:text-red-300' onClick={ () => { confirm('Apakah yakin untuk delete?') ? delProduk(produk.id_produk) : "" } }/>
@@ -262,7 +359,7 @@ function App() {
             </div>
           </div>
 
-        ) }
+        ) : ""}
       </div>
     </div>
   )
