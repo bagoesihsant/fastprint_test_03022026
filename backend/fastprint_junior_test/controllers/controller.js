@@ -173,3 +173,119 @@ export async function delProduk(req, res, next){
     }
 
 }
+
+/**
+ * Get specific record of produk with Id in table produk
+ * @param { express.Request } req Express.js Request method used for capturing User Request more documentation on http://expressjs.com/
+ * @param { express.Response } res Express.js Response method used for giving response to User request from API more documentation on http://expressjs.com/
+ * @param { express.Next } next Express.js Next method used to forward current request to forward request handler more documentation on http://expressjs.com/
+ * @returns Express JS Response for API Access
+ */
+export async function getSpecificProduk(req, res, next){
+
+    try {
+
+        // Get Users input from url
+        const requestParams = req.params;
+
+        // Check produk id
+        if (requestParams.id.trim().length < 1) {
+            return res.status(400).json({ message: 'Id Produk tidak boleh kosong.' });
+        }
+
+        // Check produk id 2
+        if (!/^\d+$/.test(requestParams.id)) {
+            return res.status(400).json({ message: 'Id Produk invalid.' });
+        }
+
+        // Check produk id 3
+        const checkProduk = await services.checkProduk({ id: requestParams.id });
+
+        if (!checkProduk.ok) {
+            return res.status(400).json({ message: 'Produk dengan Id ini tidak ditemukan.' });
+        }
+
+        const specificProduk = await services.getSpecificProduk({ id: requestParams.id });
+
+        if (!specificProduk.ok) {
+            return res.status(400).json({ message: 'Produk tidak ditemukan.' });
+        }
+
+        return res.status(200).json({ message: 'Produk found', output: specificProduk });
+
+
+    } catch (error) {
+        console.error('Controller Error', error);
+    }
+
+}
+
+
+export async function updateProduk(req, res, next){
+
+    try {
+
+        // Get Users input from url
+        const requestParams = req.params;
+
+        console.log(requestParams);
+
+        // Get Users input from body
+        const requestBody = req.body;
+
+        // Check produk id
+        if (requestParams.id.trim().length < 1) {
+            return res.status(400).json({ message: 'Id Produk tidak boleh kosong.' });
+        }
+
+        // Check produk id 2
+        if (!/^\d+$/.test(requestParams.id)) {
+            return res.status(400).json({ message: 'Id Produk invalid.' });
+        }
+
+        // Check produk id 3
+        const checkProduk = await services.checkProduk({ id: requestParams.id });
+
+        if (!checkProduk.ok) {
+            return res.status(400).json({ message: 'Produk dengan Id ini tidak ditemukan.' });
+        }
+
+        // Check Nama Produk
+        if (requestBody.update_nama_produk.trim().length < 1) {
+            return res.status(400).json({ message: 'Nama Produk harus diisi.' });
+        }
+
+        // Check Harga Produk
+        if (!/^\d+$/.test(requestBody.update_harga_produk)) {
+            return res.status(400).json({ message: 'Harga Produk hanya boleh terdiri dari angka.' });
+        }
+
+        // Check Kategori Produk
+        if (!/^\d+$/.test(requestBody.update_kategori_produk)) {
+            return res.status(400).json({ message: 'Kategori Produk invalid.' });
+        }
+
+        // Check Status Produk
+        if (!/^\d+$/.test(requestBody.update_status_produk)) {
+            return res.status(400).json({ message: 'Status Produk invalid.' });
+        }
+
+        const updateResult = await services.updateProduk({
+            id: requestParams.id,
+            nama: requestBody.update_nama_produk,
+            harga: requestBody.update_harga_produk,
+            kategori: requestBody.update_kategori_produk,
+            status: requestBody.update_status_produk,
+        });
+
+        if (!updateResult.ok) {
+            return res.status(400).json({ message: 'Gagal mengubah Produk.' });
+        }
+
+        return res.status(200).json({ message: 'Berhasil mengubah Produk.' })
+
+    } catch (error) {
+        console.error('Controller Error', error);
+    }
+
+}

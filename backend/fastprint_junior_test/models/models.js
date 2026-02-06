@@ -32,6 +32,25 @@ export async function getAllAvailableProduk(){
 }
 
 /**
+ * Get produk with specific id in tabel produk in database
+ * @param { Produk } produk custom object containing id
+ * @returns { pg.Result } pg module query result, containing rows, rowCount, fields, more on http://node-postgres.com/
+ */
+export async function getSpecificProduk(produk){
+
+    try {
+        const result = await parameterizedQuery(
+            "SELECT * FROM produk WHERE produk.id_produk = $1",
+            [ produk.id ]
+        );
+        return result;
+    } catch (error) {
+        console.error('Model Error', error);
+    }
+
+}
+
+/**
  * Check if produk with specific id exist in database
  * @param { Produk } produk custom object containing id
  * @returns { pg.Result } pg module query result, containing rows, rowCount, fields, more on http://node-postgres.com/
@@ -113,6 +132,25 @@ export async function deleteProduk(produk){
         );
         return result;
     } catch (error) {
+        console.error('Model Error', error);
+    }
+
+}
+
+/**
+ * Update record in produk table in database
+ * @param { Produk } produk custom object containing nama, harga, kategori, dan status produk
+ * @returns { pg.Result } pg module query result, containing rows, rowCount, fields, more on http://node-postgres.com/
+ */
+export async function updateProduk(produk){
+
+    try {
+        const result = await parameterizedQuery(
+            "UPDATE produk SET nama_produk = $2, harga = $3, kategori_id = $4, status_id = $5 WHERE produk.id_produk = $1",
+            [ produk.id, produk.nama, produk.harga, produk.kategori, produk.status ]
+        );
+        return result;
+    } catch(error) {
         console.error('Model Error', error);
     }
 

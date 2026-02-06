@@ -27,6 +27,32 @@ export async function showAvailableProduk(){
 }
 
 /**
+ * Check record of produk with specific id in table produk
+ * @param { Produk } produk custom object containing id
+ * @returns { Custom Object } Custom Object with value of ok (Boolean), and output (Array) with empty output or complete data
+ */
+export async function getSpecificProduk(produk){
+
+    try {
+
+        // Query Execution
+        const specificProduk = await models.getSpecificProduk(produk);
+
+        // Check query result
+        if (specificProduk.rowCount < 1) {
+            return { ok: false, output: [] }
+        }
+
+        // Return query result if success
+        return { ok: true, output: specificProduk.rows }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
  * Get all kategori from database
  * @returns { Custom Object } Custom Object with value of ok (Boolean), and output (Array) with empty output or complete data
  */
@@ -142,6 +168,32 @@ export async function deleteProduk(produk){
 
         // Check query result
         if (delResult.rowCount < 1) {
+            return { ok: false }
+        }
+
+        // Return ok true if success
+        return { ok: true }
+
+    } catch (error) {
+        console.error('Service Error', error);
+    }
+
+}
+
+/**
+ * Update record from produk table in database
+ * @param { Produk } produk custom object containing id, nama, harga, kategori, dan status produk
+ * @returns { Custom Object } Custom Object with value of ok (Boolean)
+ */
+export async function updateProduk(produk) {
+
+    try {
+
+        // Query Execution
+        const updateResult = await models.updateProduk(produk);
+
+        // Check Query Result
+        if (updateResult.rowCount < 1){
             return { ok: false }
         }
 
